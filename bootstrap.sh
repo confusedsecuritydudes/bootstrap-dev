@@ -40,23 +40,28 @@ if ! dpkg -s python3-venv >/dev/null 2>&1; then
   sudo apt install -y python3-venv
 fi
 
-# ── pipx install / repair (PEP-668 safe) ─────────────────────────────
-# 1. Install pipx via apt if missing
+# ── pipx install / repair (PEP-668 safe) ──────────────────────────────
+
+# 0. Install pipx via apt if missing
 if ! command -v pipx >/dev/null 2>&1; then
   echo "==> Installing pipx via apt"
   sudo apt install -y pipx
-  pipx ensurepath
+  pipx ensurepath --force        # --force silences PATH warning
 fi
 
-# 2. Detect corrupt metadata anywhere inside ~/.local/pipx
-if ! pipx list --short >/dev/null 2>&1; then
-  echo "==> Detected pipx corruption – resetting ~/.local/pipx"
-  rm -rf ~/.local/pipx
-  pipx ensurepath
+# 1. Clean up any zero-byte metadata files (root and venvs)
+find "$HOME/.local/pipx" -type f -name 'pipx_metadata.json' -size 0 -print -delete 2>/dev/null || true
+
+# 2. If pipx STILL errors, wipe everything and start fresh once
+if ! pipx --version >/dev/null 2>&1; then
+  echo "==> pipx still unhappy – resetting ~/.local/pipx completely"
+  rm -rf "$HOME/.local/pipx"
+  pipx ensurepath --force
 fi
 
-# 3. Global CLI tools (idempotent)
-if ! pipx list --short | grep -q '^pre-commit$'; then
+# 3. Install global CLI utilities (idempotent via command check)
+if ! command -v pre-commit >/dev/null 2>&1; then
+  echo "==> Installing pre-commit via pipx"
   pipx install pre-commit
 fi
 
