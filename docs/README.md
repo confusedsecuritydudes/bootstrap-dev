@@ -41,7 +41,17 @@ cd bootstrap-dev
 
 ---
 
-### 2 . Run the bootstrap script
+### 2 . Clone your dev stack repositories
+
+Now that SSH works:
+
+```bash
+cd ~/dev/configs
+git clone git@github.com:<your-user>/home-dev-stacks.git
+```
+
+
+### 3 . Run the bootstrap script
 
 ```bash
 chmod +x bootstrap.sh              # first time only
@@ -62,7 +72,7 @@ The script is **idempotent**—re-run it at any time and it only fixes what’s 
 
 ---
 
-### 3 . Generate an SSH key & load it into GitHub
+### 4 . Generate an SSH key & load it into GitHub
 
 ```bash
 ssh-keygen -t ed25519 -C "$(hostname)-wsl" -f ~/.ssh/id_ed25519
@@ -77,15 +87,6 @@ ssh -T git@github.com
 ```
 
 ---
-### 4 . Clone your dev stack repositories
-
-Now that SSH works:
-
-```bash
-cd ~/dev/configs
-git clone git@github.com:<your-user>/home-dev-stacks.git
-```
-
 
 ### 5 . Clone your real code repositories
 
