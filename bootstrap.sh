@@ -72,8 +72,9 @@ fi
 install_docker_engine() {
   echo "==> Installing Docker Engine inside WSL via get.docker.com…"
 
-  if command -v docker >/dev/null 2>&1; then
-    echo "   • Docker CLI already present, skipping."
+ # Exit early only if Docker **works**, not merely exists
+  if docker info >/dev/null 2>&1; then
+    echo "   • Docker daemon already reachable – nothing to do."
     return
   fi
 
