@@ -40,6 +40,13 @@ if ! dpkg -s python3-venv >/dev/null 2>&1; then
   sudo apt install -y python3-venv
 fi
 
+# ── pipx self-heal for empty metadata ────────────────────────────────
+PIPX_META="$HOME/.local/pipx/pipx_metadata.json"
+if [ -f "$PIPX_META" ] && [ ! -s "$PIPX_META" ]; then      # file exists but size 0
+  echo "==> Detected empty pipx metadata – recreating"
+  rm -f "$PIPX_META"
+fi
+
 # use apt, not pip, to get pipx – avoids the externally-managed error
 if ! command -v pipx >/dev/null 2>&1; then
   echo "==> Installing pipx via apt"
@@ -48,7 +55,10 @@ if ! command -v pipx >/dev/null 2>&1; then
 fi
 
 # example global CLI utility
-pipx install pre-commit || true
+if ! pipx list --short | grep -q '^pre-commit$'; then
+  pipx install pre-commit
+fi
+
 
 # ── docker group (skip if already done) ───────────────────────────────
 if ! id -nG "$USER" | grep -q docker; then
