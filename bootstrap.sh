@@ -78,3 +78,11 @@ fi
 
 # ── VS Code extension list export for reproducibility ─────────────────
 code --list-extensions > "$DEV_ROOT/configs/vscode-extensions.txt" 2>/dev/null || true
+
+STACK_DIR="$DEV_ROOT/configs/home-dev-stacks"
+if [ ! -d "$STACK_DIR" ]; then
+  git clone https://github.com/your-user/home-dev-stacks.git "$STACK_DIR"
+fi
+
+cd "$STACK_DIR/n8n-stack"
+docker compose up -d
