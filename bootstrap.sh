@@ -40,21 +40,22 @@ if ! dpkg -s python3-venv >/dev/null 2>&1; then
   sudo apt install -y python3-venv
 fi
 
-# ── pipx self-heal for empty metadata ────────────────────────────────
-PIPX_META="$HOME/.local/pipx/pipx_metadata.json"
-if [ -f "$PIPX_META" ] && [ ! -s "$PIPX_META" ]; then      # file exists but size 0
-  echo "==> Detected empty pipx metadata – recreating"
-  rm -f "$PIPX_META"
-fi
-
-# use apt, not pip, to get pipx – avoids the externally-managed error
+# ── pipx install / repair (PEP-668 safe) ─────────────────────────────
+# 1. Install pipx via apt if missing
 if ! command -v pipx >/dev/null 2>&1; then
   echo "==> Installing pipx via apt"
   sudo apt install -y pipx
   pipx ensurepath
 fi
 
-# example global CLI utility
+# 2. Detect corrupt metadata anywhere inside ~/.local/pipx
+if ! pipx list --short >/dev/null 2>&1; then
+  echo "==> Detected pipx corruption – resetting ~/.local/pipx"
+  rm -rf ~/.local/pipx
+  pipx ensurepath
+fi
+
+# 3. Global CLI tools (idempotent)
 if ! pipx list --short | grep -q '^pre-commit$'; then
   pipx install pre-commit
 fi
