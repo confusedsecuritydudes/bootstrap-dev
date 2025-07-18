@@ -1,22 +1,47 @@
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+## ——  Secrets  ——————————————————————————
+.config/secrets/
+*.env
+*.key
+*.pem
+*.p12
 
-# Python
+## ——  Python  ————————————————————————————
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
 .Python
+pip-wheel-metadata/
 
-# Config
-config/settings.py
+## ——  Node / JS  ————————————————————————
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# IDE
+## ——  Editor / IDE  ————————————————
 .vscode/
 .idea/
+*.swp
+*~
+
+## ——  OS miscellany  ————————————————
+.DS_Store
+Thumbs.db
+
+## ——  Export / backup blobs  ————————
+ubuntu-*.tar
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tgz
+*.img
+*.qcow2
+*.docker
+
+## ——  Logs  ————————————————————————————
+*.log
+*.old
+*.bak
