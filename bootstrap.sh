@@ -10,7 +10,11 @@ PACKAGES=(build-essential curl git unzip zsh nano ca-certificates
 
 # ── helpers ───────────────────────────────────────────────────────────
 need() { command -v "$1" >/dev/null 2>&1; }   # returns 0 if found, 1 if not
-ensure_dir() { [[ -d "$1" ]] || mkdir -p "$1"; }
+ensure_dir() {
+  for dir in "$@"; do
+    [[ -d "$dir" ]] || mkdir -p "$dir"
+  done
+}
 
 # ── directories ───────────────────────────────────────────────────────
 ensure_dir "$DEV_ROOT"/{projects,configs,scripts}
