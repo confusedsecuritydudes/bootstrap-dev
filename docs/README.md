@@ -77,10 +77,19 @@ ssh -T git@github.com
 ```
 
 ---
-
-### 4 . Clone your real code repositories
+### 4 . Clone your dev stack repositories
 
 Now that SSH works:
+
+```bash
+cd ~/dev/configs
+git clone git@github.com:<your-user>/home-dev-stacks.git
+```
+
+
+### 5 . Clone your real code repositories
+
+Now we have our docker containers started (for n8n etc):
 
 ```bash
 cd ~/dev/projects
@@ -91,7 +100,7 @@ Repeat for any other repos.
 
 ---
 
-### 5 . Restore project-level Python/Node deps
+### 6 . Restore project-level Python/Node deps
 
 Inside each project (example):
 
@@ -108,14 +117,14 @@ npm install
 
 ---
 
-### 6 . Import secrets (if any)
+### 7 . Import secrets (if any)
 
 The bootstrap script will source any file you drop into **`~/.config/secrets/`**.
 Copy your `anthropic.env`, `.npmrc`, etc. into that folder **manually or via 1Password/Bitwarden CLI**.
 
 ---
 
-### 7 . (Optional) Restore a complete WSL image
+### 8 . (Optional) Restore a complete WSL image
 
 If you exported a tarball on your old machine:
 
