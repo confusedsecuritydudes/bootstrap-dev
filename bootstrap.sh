@@ -96,6 +96,16 @@ install_docker_engine() {
     echo "   ⚠ Docker installed but test container failed – troubleshoot manually."
   fi
 }
+
+docker_working() { docker info >/dev/null 2>&1; }   # returns 0 if daemon reachable
+
+if ! docker_working; then
+  echo "==> Docker CLI present but daemon unreachable."
+  echo "   • Turn on WSL integration in Docker Desktop, OR"
+  echo "   • Let me install a native daemon."
+  install_docker_engine          # will run only if you choose path B
+fi
+
 if ! command -v docker >/dev/null 2>&1; then
   echo "==> WARNING: Docker CLI not found in this WSL distro."
   echo "   • Either enable WSL integration in Docker Desktop"
