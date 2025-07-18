@@ -69,59 +69,33 @@ if ! command -v pre-commit >/dev/null 2>&1; then
   pipx install pre-commit
 fi
 
-# ── function: install_docker_engine (Ubuntu / WSL2) ───────────────────
 install_docker_engine() {
-  echo "==> Installing upstream Docker Engine inside WSL…"
+  echo "==> Installing Docker Engine inside WSL via get.docker.com…"
 
-  # 0. Exit early if docker is already present (idempotent)
   if command -v docker >/dev/null 2>&1; then
     echo "   • Docker CLI already present, skipping."
     return
   fi
 
-  # 1. Remove any Debian-distro docker remnants
+  # 0. Remove any old distro docker packages
   sudo apt remove -y docker docker-engine docker.io containerd runc 2>/dev/null || true
 
-  # 2. Prereqs for secure APT transport
-  sudo apt-get update -qq
-  sudo apt-get install -y \
-       ca-certificates curl gnupg lsb-release
+  # 1. Run official convenience installer (adds repo + installs engine & compose plugin)
+  curl -fsSL https://get.docker.com | sudo sh
 
-  # 3. Add Docker’s official GPG key & repo  (only once)
-  if [ ! -f /etc/apt/keyrings/docker.gpg ]; then
-    sudo install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-      sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-  fi
-
-  REPO_FILE=/etc/apt/sources.list.d/docker.list
-  CODENAME=$(lsb_release -cs)
-  if ! grep -q "download.docker.com" "$REPO_FILE" 2>/dev/null; then
-    echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-      https://download.docker.com/linux/ubuntu $CODENAME stable" | \
-      sudo tee "$REPO_FILE" >/dev/null
-  fi
-
-  # 4. Install engine + Compose plugin
-  sudo apt-get update -qq
-  sudo apt-get install -y docker-ce docker-ce-cli containerd.io \
-                          docker-buildx-plugin docker-compose-plugin
-
-  # 5. Add current user to docker group (if not already)
+  # 2. Add user to docker group
   if ! id -nG "$USER" | grep -q docker; then
     sudo usermod -aG docker "$USER"
     echo "   • Added $USER to docker group – log out/in or run 'newgrp docker'"
   fi
 
-  # 6. Smoke test (no exit-on-error inside function)
+  # 3. Smoke test
   if docker run --rm hello-world >/dev/null 2>&1; then
     echo "   ✔ Docker Engine installed and working."
   else
     echo "   ⚠ Docker installed but test container failed – troubleshoot manually."
   fi
 }
-
 if ! command -v docker >/dev/null 2>&1; then
   echo "==> WARNING: Docker CLI not found in this WSL distro."
   echo "   • Either enable WSL integration in Docker Desktop"
