@@ -1,6 +1,4 @@
-Below is a concise “**New-Device Quick-Start**” section you can paste straight into your `README.md`. It assumes the repo is public (or at least clone-able over HTTPS) and the host is Windows 11 with nothing but the default WSL tooling.
 
----
 
 ## ⚡ New-Device Quick-Start
 
